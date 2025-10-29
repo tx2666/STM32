@@ -1,4 +1,4 @@
-This is a readme.md
-A branch named dev was created for practise
-Creating a new branch is easy and simple
+This is a readme.md.
+A branch named dev was created for test.
+Creating a new branch is easy and simple.
 
