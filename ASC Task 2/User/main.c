@@ -4,12 +4,16 @@
 #include "Serial.h"
 #include "Key.h"
 #include "LED.h"
+#include "Timer.h"
 #include <string.h>
 
 uint8_t KeyNum;
 
 int main(void)
 {
+	// 初始化
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	Timer_Init();
 	OLED_Init();
 	Key_Init();
 	Serial_Init();
@@ -47,5 +51,14 @@ int main(void)
 				Serial_Printf("ERROR");
 			}
 		}
+	}
+}
+
+void TIM2_IRQHandler(void)
+{
+	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+	{
+		
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 }
