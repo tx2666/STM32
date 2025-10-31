@@ -3,11 +3,11 @@
 #include "OLED.h"
 #include "Serial.h"
 #include "Key.h"
-#include "LED.h"
 #include "Timer.h"
 #include <string.h>
 
 uint8_t KeyNum;
+uint8_t Mode = 0;
 
 int main(void)
 {
@@ -17,39 +17,24 @@ int main(void)
 	OLED_Init();
 	Key_Init();
 	Serial_Init();
-	LED_Init();
-	
-	OLED_ShowString(1, 1, "TxPacket");
-	OLED_ShowString(3, 1, "RxPacket");
-	
-	Serial_SendPacket();
 	
 	while (1)
 	{
-		if (Serial_GetRxFlag() == 1)
+		KeyNum = Key_GetNum();
+		if (KeyNum == 1)
 		{
-			OLED_ShowString(4, 1, "                ");  // 清空
-			OLED_ShowString(4, 1, Serial_RxPacket);
-			if (strcmp(Serial_RxPacket, "LED_ON") == 0)
-			{
-				LED1_On();
-				OLED_ShowString(2, 1, "                ");
-				OLED_ShowString(2, 1, "LED_ON_OK");
-				Serial_Printf("LED_ON_OK");
-			}
-			else if (strcmp(Serial_RxPacket, "LED_OFF") == 0)
-			{
-				LED1_Off();
-				OLED_ShowString(2, 1, "                ");
-				OLED_ShowString(2, 1, "LED_OFF_OK");
-				Serial_Printf("LED_OFF_OK");
-			}
-			else
-			{
-				OLED_ShowString(2, 1, "                ");
-				OLED_ShowString(2, 1, "ERROR");
-				Serial_Printf("ERROR");
-			}
+			Mode = !Mode;
+		}
+		
+		if (Mode == 0)
+		{
+			OLED_ShowChar(1, 16, '0');
+			// 编码器测速与电机速度环
+		}
+		else if (Mode == 1)
+		{
+			OLED_ShowChar(1, 16, '1');
+			// PID运用 电机传动系统
 		}
 	}
 }
@@ -59,6 +44,7 @@ void TIM2_IRQHandler(void)
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
+		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 }

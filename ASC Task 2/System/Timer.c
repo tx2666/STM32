@@ -16,7 +16,10 @@ void Timer_Init(void)
 	// 1ms进一次中断
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
-	
+	// 清除中断位
+	TIM_ClearFlag(TIM2, TIM_FLAG_Update);
+	// 启用中断
+	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 	// NVIC配置
 	// NVIC_PriorityGroupConfig主函数写了，这里不写
 	
@@ -31,7 +34,7 @@ void Timer_Init(void)
 }
 
 /*
- *中断函数，哪里需要扔哪里
+ * 中断函数，哪里需要扔哪里
 void TIM2_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
