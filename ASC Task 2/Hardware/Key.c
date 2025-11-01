@@ -36,7 +36,7 @@ uint8_t Key_GetNum(void)
 void Key_Tick(void)
 {  // 只有切换作用，不做多功能按钮
 	static uint16_t Count1;
-	static uint8_t PrevState, CurrState;
+	static uint8_t PrevState = 0, CurrState = 0;
 	Count1 ++;
 	if (Count1 >= 20)
 	{	
