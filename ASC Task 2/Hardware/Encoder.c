@@ -6,7 +6,6 @@ void Encoder_Init(void)
 {
 	/* 开启时钟 */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	
@@ -41,23 +40,11 @@ void Encoder_Init(void)
 	TIM_ICInit(TIM3, &TIM_ICInitStructure);
 	// 下面这个设置编码器接口
 	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
-	// 下方开启时钟，对电机1的初始化结束
+	// 下方开启时钟，对电机1测速的初始化结束
 	TIM_Cmd(TIM3, ENABLE);
 	
 	/* 电机2 */
 	
-//	// GPIOB 8 9 电机2
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_Init(GPIOB, &GPIO_InitStructure);
-//	// 时基单元 TIM4 分配给电机2
-//	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-//	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-//	TIM_TimeBaseInitStructure.TIM_Period = 65536 - 1;  // ARR
-//	TIM_TimeBaseInitStructure.TIM_Prescaler = 1 - 1;  // PSC
-//	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
-//	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseInitStructure);
 }
 
 int16_t Encoder1_Get(void)
