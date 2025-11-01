@@ -24,3 +24,5 @@ JLinkLog.txt
 *.htm
 *.sct
 *.map
+# 这个根据电脑来的，忽略掉
+Project.uvguix.ASUS
