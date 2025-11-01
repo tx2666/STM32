@@ -34,7 +34,7 @@ int main(void)
 			}
 			else if (Mode == 1)
 			{
-				OLED_ShowString(1, 4, "       ");  // 7个空格
+				OLED_ShowString(1, 4, "        ");  // 7个空格
 			}
 		}
 		
@@ -42,10 +42,12 @@ int main(void)
 		{
 			OLED_ShowChar(1, 16, '0');
 			// 编码器测速与电机速度环
-			int16_t count;
-			count = Encoder1_Count;  // 在Encoder.c
-			OLED_ShowString(1, 1, "CNT:");
-			OLED_ShowSignedNum(1, 5, count, 5);
+			int16_t count1, count2;
+			count1 = Encoder1_Count;  // 在Encoder.c
+			OLED_ShowString(1, 1, "CNT1:");
+			OLED_ShowSignedNum(1, 6, count1, 5);
+			OLED_ShowString(2, 1, "CNT2:");
+			OLED_ShowSignedNum(2, 6, count2, 5);
 		}
 		else if (Mode == 1)
 		{
