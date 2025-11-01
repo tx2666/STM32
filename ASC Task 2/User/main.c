@@ -4,6 +4,7 @@
 #include "Serial.h"
 #include "Key.h"
 #include "Timer.h"
+#include "Encoder.h"
 #include <string.h>
 
 uint8_t KeyNum;
@@ -13,28 +14,44 @@ int main(void)
 {
 	// 初始化
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	Timer_Init();
-	OLED_Init();
+	// 好像初始化的顺序对程序有影响
 	Key_Init();
+	Timer_Init();
 	Serial_Init();
+	OLED_Init();
+	Encoder_Init();
 	
 	while (1)
 	{
 		KeyNum = Key_GetNum();
-		if (KeyNum == 1)
+		if (KeyNum == 1)  // 模式切换
 		{
 			Mode = !Mode;
+			// 避免切换时OLED产生的闪烁
+			if (Mode == 0)
+			{
+				OLED_ShowString(1, 1, "   ");  // 3个空格，去掉PID
+			}
+			else if (Mode == 1)
+			{
+				OLED_ShowString(1, 4, "       ");  // 7个空格
+			}
 		}
 		
 		if (Mode == 0)
 		{
 			OLED_ShowChar(1, 16, '0');
 			// 编码器测速与电机速度环
+			int16_t count;
+			count = Encoder1_Count;  // 在Encoder.c
+			OLED_ShowString(1, 1, "CNT:");
+			OLED_ShowSignedNum(1, 5, count, 5);
 		}
 		else if (Mode == 1)
 		{
 			OLED_ShowChar(1, 16, '1');
 			// PID运用 电机传动系统
+			OLED_ShowString(1, 1, "PID");
 		}
 	}
 }
@@ -44,6 +61,7 @@ void TIM2_IRQHandler(void)
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
+		Encoder_Tick();
 		
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
