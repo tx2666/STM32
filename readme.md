@@ -24,4 +24,4 @@
 
 Timer: TIM2 用于1ms进中断，实现多线程的效果
 
-Encoder: TIM3 测量电机1的速度
+Encoder: TIM3 测量电机1的速度; TIM4 测量电机2的速度;
