@@ -45,6 +45,7 @@ int main(void)
 			// 编码器测速与电机速度环
 			int16_t count1, count2;
 			count1 = Encoder1_Count;  // 在Encoder.c
+			count2 = Encoder2_Count;
 			OLED_ShowString(1, 1, "CNT1:");
 			OLED_ShowSignedNum(1, 6, count1, 5);
 			OLED_ShowString(2, 1, "CNT2:");
