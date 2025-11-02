@@ -27,7 +27,7 @@ int main(void)
 		if (KeyNum == 1)  // 模式切换
 		{
 			Mode = !Mode;
-			// 避免切换时OLED产生的闪烁
+			// 避免切换时OLED产生闪烁
 			if (Mode == 0)
 			{
 				OLED_ShowString(1, 1, "   ");  // 3个空格，去掉PID
@@ -35,6 +35,7 @@ int main(void)
 			else if (Mode == 1)
 			{
 				OLED_ShowString(1, 4, "        ");  // 7个空格
+				OLED_ShowString(2, 1, "           ");  // 10个空格				
 			}
 		}
 		
