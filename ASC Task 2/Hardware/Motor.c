@@ -14,7 +14,7 @@ void Motor_Init(void)
 	
 	PWM_Init();
 	
-	PWM_SetCompare1(0);
+	PWM_SetCompare1(5);
 }
 
 void Motor1_SetSpeed(int16_t Speed)

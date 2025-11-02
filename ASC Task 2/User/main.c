@@ -29,7 +29,7 @@ int main(void)
 	
 	Motor_Init();
 	
-	Motor1_SetSpeed(-500);
+	Motor1_SetSpeed(900);
 	
 	while (1)
 	{
