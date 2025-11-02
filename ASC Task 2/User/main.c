@@ -7,6 +7,8 @@
 #include "Encoder.h"
 #include <string.h>
 
+#include "Motor.h"
+
 uint8_t KeyNum;
 uint8_t Mode = 0;
 
@@ -16,10 +18,18 @@ int main(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	// 好像初始化的顺序对程序有影响
 	Key_Init();
+	
 	Timer_Init();
+	
 	Serial_Init();
+	
 	OLED_Init();
+	
 	Encoder_Init();
+	
+	Motor_Init();
+	
+	Motor1_SetSpeed(-500);
 	
 	while (1)
 	{
@@ -42,7 +52,7 @@ int main(void)
 		if (Mode == 0)
 		{
 			OLED_ShowChar(1, 16, '0');
-			// 编码器测速与电机速度环
+			// 编码器测速与电机速度
 			int16_t count1, count2;
 			count1 = Encoder1_Count;  // 在Encoder.c
 			count2 = Encoder2_Count;

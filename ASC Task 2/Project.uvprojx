@@ -670,6 +670,16 @@
               <FileType>5</FileType>
               <FilePath>.\System\Timer.h</FilePath>
             </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\System\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\System\PWM.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -729,6 +739,16 @@
               <FileName>Encoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\Encoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>Motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>Motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Motor.h</FilePath>
             </File>
           </Files>
         </Group>
