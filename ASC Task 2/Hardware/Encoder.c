@@ -12,7 +12,8 @@ void Encoder_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	
 	// 初始化
-	// GPIOA 6 7 电机1
+	/* 电机1 */ 
+	// GPIOA 6 7
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
@@ -46,7 +47,7 @@ void Encoder_Init(void)
 	TIM_Cmd(TIM3, ENABLE);
 	
 	/* 电机2 */
-	// 初始化GPIO
+	// GPIOB 6 7
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
