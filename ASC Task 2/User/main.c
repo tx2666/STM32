@@ -65,12 +65,54 @@ int main(void)
 		{
 			OLED_ShowChar(1, 16, '0');
 			// 编码器测速与电机速度
+			OLED_ShowString(1, 1, "CNT1:");
+			OLED_ShowString(2, 1, "CNT2:");
+			if (Serial_GetRxFlag() == 1)  // 串口有数据发过来
+			{
+				char Command[100];
+				
+				uint8_t i;
+				uint8_t flag1 = 1;
+				uint8_t Num_flag = 1;  // 1表示正数，0表示负数
+				int16_t Num = 0;
+				for (i = 0; Serial_RxPacket[i] != '\0'; i++)
+				{
+					char c = Serial_RxPacket[i];
+					if (c == '%')
+					{
+						flag1 = 0;
+					}
+					else if (flag1)
+					{
+						Command[i] = c;
+					}
+					else if (!flag1)
+					{
+						if (c == '-')
+						{
+							Num_flag = 0;
+						}
+						else 
+						{
+							Num *= 10;
+							Num += c - '0';
+						}
+					}
+				}
+				if (strcmp(Command, "speed") == 0)
+				{
+					Num = (Num_flag == 0) ? -Num : Num;  // 确认正负
+					PID_Motor1.Target_Speed = Num;
+				}
+				else 
+				{
+					Serial_Printf("Command Error");
+				}
+			}
 			int16_t count1, count2;
 			count1 = Encoder1_Count;  // 在Encoder.c
 			count2 = Encoder2_Count;
-			OLED_ShowString(1, 1, "CNT1:");
 			OLED_ShowSignedNum(1, 6, count1, 5);
-			OLED_ShowString(2, 1, "CNT2:");
 			OLED_ShowSignedNum(2, 6, count2, 5);
 			PID_Motor1.Current_Speed = count1;
 		}
