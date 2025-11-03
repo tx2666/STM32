@@ -3,7 +3,7 @@
 #include "Serial.h"
 
 typedef struct {
-	float Magnification;  	// 放大倍数，表示最终结果要放大多少倍
+	float Magnification;  	// 倍数，表示最终结果要乘多少倍
 	float Kp;				// 比例项系数
 	float Ki;				// 积分项系数
 	float Kd;				// 微分项系数
