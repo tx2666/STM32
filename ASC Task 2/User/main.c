@@ -19,7 +19,7 @@ int main(void)
 {
 	// 初始化
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	// 好像初始化的顺序对程序有影响
+
 	Key_Init();
 	
 	Timer_Init();
@@ -32,16 +32,20 @@ int main(void)
 	
 	Motor_Init();
 	
-	Motor1_SetSpeed(0);
-	
 	PID_TypedefStructInit(&PID_Motor1);
 	PID_Motor1.Magnification = 1;
-	PID_Motor1.Kp = 1.13;
-	PID_Motor1.Ki = 0.41;
+	PID_Motor1.Kp = 1.16;
+	PID_Motor1.Ki = 0.42;
 	PID_Motor1.Kd = -3.5;
-	PID_Motor1.Target_Speed = 0;
-	// 极速为500左右
+	PID_Motor1.Target_Speed = 200;
+	// 极速为530左右
 	PID_TypedefStructInit(&PID_Motor2);
+	PID_Motor2.Magnification = 1;
+	PID_Motor2.Kp = 1.13;
+	PID_Motor2.Ki = 0.41;
+	PID_Motor2.Kd = -3.5;
+	PID_Motor2.Target_Speed = 0;
+	// 极速为520左右
 	
 	while (1)
 	{
@@ -115,6 +119,7 @@ int main(void)
 			OLED_ShowSignedNum(1, 6, count1, 5);
 			OLED_ShowSignedNum(2, 6, count2, 5);
 			PID_Motor1.Current_Speed = count1;
+			PID_Motor2.Current_Speed = count2;
 		}
 		else if (Mode == 1)
 		{
@@ -131,22 +136,23 @@ void Send_Data()
 	Count1 ++;
 	if (Count1 >= 10)
 	{
-		Serial_Printf("Data:%f, %f, %f, %f, %f\r\n", (float)Encoder1_Count, 
+		Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
 			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out);
 		
 		Count1 = 0;
 	}
 }
 
-void TIM2_IRQHandler(void)
+void TIM1_UP_IRQHandler(void)
 {
-	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+	if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
 		Encoder_Tick();
 		PID_Motor_Control(1, &PID_Motor1);
+		PID_Motor_Control(2, &PID_Motor2);
 		Send_Data();
 		
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
 }

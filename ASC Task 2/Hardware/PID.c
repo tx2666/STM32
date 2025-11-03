@@ -3,7 +3,7 @@
 #include "Serial.h"
 
 typedef struct {
-	float Magnification;  	// 放大倍数，表示最终结果要放大多少倍
+	float Magnification;  	// 倍数，表示最终结果要乘多少倍
 	float Kp;				// 比例项系数
 	float Ki;				// 积分项系数
 	float Kd;				// 微分项系数
@@ -13,28 +13,24 @@ typedef struct {
 	float I;
 	float D;
 	float Out;
+	float PrevError;
+	float CurrError;
+	float SumError;
+	uint16_t Count1;
 } PID_Typedef;
 
 void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 {
-	static float PrevError = 0;
-	static float CurrError = 0;
-	static float SumError = 0;
-	static uint16_t Count1 = 0;
-	Count1 ++ ;
-	if (Count1 >= 10)
+	pid->Count1 ++ ;
+	if (pid->Count1 >= 10)
 	{
-		PrevError = CurrError;
-		CurrError = pid->Target_Speed - pid->Current_Speed;
-		SumError += CurrError;
-		if (SumError > 1000 / pid->Ki)
-		{
-			SumError = 1000 / pid->Ki;
-		}
+		pid->PrevError = pid->CurrError;
+		pid->CurrError = pid->Target_Speed - pid->Current_Speed;
+		pid->SumError += pid->CurrError;
 		// PID计算
-		pid->P = pid->Kp * CurrError;
-		pid->I = pid->Ki * SumError;
-		pid->D = pid->Kd * (CurrError - PrevError) / Count1;
+		pid->P = (pid->Kp) * (pid->CurrError);
+		pid->I = (pid->Ki) * (pid->SumError);
+		pid->D = (pid->Kd) * (pid->CurrError - pid->PrevError) / (pid->Count1);
 		
 		// 输出计算
 		pid->Out = pid->P + pid->I + pid->D;
@@ -55,6 +51,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 		}
 		else if (Motor_Num == 2)
 		{
+			Motor2_SetSpeed(pid->Out);
 		}
 		else
 		{
@@ -63,7 +60,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 		// 信息发送
 
 		
-		Count1 = 0;
+		pid->Count1 = 0;
 	}
 }
 
@@ -79,4 +76,8 @@ void PID_TypedefStructInit(PID_Typedef *PID_Struct)
 	PID_Struct->I = 0;
 	PID_Struct->D = 0;
 	PID_Struct->Out = 0;
+	PID_Struct->PrevError = 0;
+	PID_Struct->CurrError = 0;
+	PID_Struct->SumError = 0;
+	PID_Struct->Count1 = 0;
 }
