@@ -3,7 +3,7 @@
 
 /* 变量类型部分 */
 typedef struct {
-	float Magnification;  	// 放大倍数，表示最终结果要放大多少倍
+	float Magnification;  	// 倍数，表示最终结果要乘多少倍
 	float Kp;				// 比例项系数
 	float Ki;				// 积分项系数
 	float Kd;				// 微分项系数
@@ -13,7 +13,12 @@ typedef struct {
 	float I;
 	float D;
 	float Out;
+	float PrevError;
+	float CurrError;
+	float SumError;
+	uint16_t Count1;
 } PID_Typedef;
+
 
 /* 函数部分 */
 void PID_TypedefStructInit(PID_Typedef *PID_Struct);

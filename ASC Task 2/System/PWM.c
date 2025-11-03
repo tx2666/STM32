@@ -11,7 +11,7 @@ void PWM_Init(void)
 	// GPIOA 8 10
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_1;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
@@ -38,14 +38,14 @@ void PWM_Init(void)
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;	// 输出启用
 	TIM_OCInitStructure.TIM_Pulse = 0;								// 占空比0/1000
 	TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-	/*
-	// TIM2 Channel 4
+	
+	// TIM2 Channel 2
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;				// PWM模式1
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;		// 极性不反转
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;	// 输出启用
 	TIM_OCInitStructure.TIM_Pulse = 0;								// 占空比0/1000
-	TIM_OC4Init(TIM2, &TIM_OCInitStructure);
-	*/
+	TIM_OC2Init(TIM2, &TIM_OCInitStructure);
+	
 	// TIM2使能
 	TIM_Cmd(TIM2, ENABLE);
 	
