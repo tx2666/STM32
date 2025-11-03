@@ -39,7 +39,7 @@ int main(void)
 	PID_Motor1.Kp = 1.13;
 	PID_Motor1.Ki = 0.41;
 	PID_Motor1.Kd = -3.5;
-	PID_Motor1.Target_Speed = 0;
+	PID_Motor1.Target_Speed = 50;
 	// 极速为500左右
 	PID_TypedefStructInit(&PID_Motor2);
 	
@@ -138,15 +138,15 @@ void Send_Data()
 	}
 }
 
-void TIM2_IRQHandler(void)
+void TIM1_UP_IRQHandler(void)
 {
-	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+	if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
 		Encoder_Tick();
 		PID_Motor_Control(1, &PID_Motor1);
 		Send_Data();
 		
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
 }
