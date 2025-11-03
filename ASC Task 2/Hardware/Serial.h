@@ -14,7 +14,7 @@ void Serial_SendNumber(uint32_t Number, uint8_t Length);
 void Serial_Printf(char *format, ...);
 uint8_t Serial_GetRxFlag(void);
 void Serial_SendPacket(void);
-
+void Serial_Tick(void);
 
 
 #endif

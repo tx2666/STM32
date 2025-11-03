@@ -1,6 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include <stdio.h>
 #include <stdarg.h>
+#include "Encoder.h"
 
 uint8_t Serial_TxPacket[4];
 char Serial_RxPacket[100];
@@ -158,5 +159,19 @@ void USART1_IRQHandler(void)
 			}
 		}
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+	}
+}
+
+void Serial_Tick(void)
+{
+	static uint16_t Count1 = 0;
+	Count1 ++;
+	if (Count1 >= 10)
+	{
+		float ECount1 = (float)Encoder1_Count;
+		float ECount2 = (float)Encoder2_Count;
+		Serial_Printf("Data:%f, %f\r\n", ECount1, ECount2);
+		
+		Count1 = 0;
 	}
 }
