@@ -129,7 +129,7 @@ void USART1_IRQHandler(void)
 		if (RxState == 0)
 		{
 			// 等待包头
-			if (RxData == '@' && Serial_RxFlag == 0)
+			if (RxData == '%' && Serial_RxFlag == 0)
 			{
 				RxState = 1;
 				pRxData = 0;
