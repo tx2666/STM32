@@ -136,8 +136,8 @@ void Send_Data()
 	Count1 ++;
 	if (Count1 >= 10)
 	{
-		Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
-			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out);
+		Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
+			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out, PID_Motor1.Target_Speed);
 		
 		Count1 = 0;
 	}
