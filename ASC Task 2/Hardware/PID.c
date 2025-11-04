@@ -35,8 +35,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 		pid->D = (pid->Kd) * (pid->CurrError - 2 * pid->PrevError + pid->PrevPrevError);
 		
 		// 输出计算
-		pid->Out += pid->P + pid->I + pid->D;
-		pid->Out *= pid->Magnification;
+		pid->Out += (pid->P + pid->I + pid->D) * pid->Magnification;
 		
 		if (pid->Out > 1000)
 		{
