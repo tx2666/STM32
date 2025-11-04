@@ -34,17 +34,17 @@ int main(void)
 	
 	PID_TypedefStructInit(&PID_Motor1);
 	PID_Motor1.Magnification = 1;
-	PID_Motor1.Kp = 1.16;
+	PID_Motor1.Kp = 0.5;
 	PID_Motor1.Ki = 0.42;
 	PID_Motor1.Kd = -0.35;
-	PID_Motor1.Target_Speed = 0;
-	// 极速为530左右
+	PID_Motor1.Target = 0;
+	// 极速为480左右
 	PID_TypedefStructInit(&PID_Motor2);
 	PID_Motor2.Magnification = 1;
 	PID_Motor2.Kp = 1.13;
 	PID_Motor2.Ki = 0.41;
 	PID_Motor2.Kd = -3.5;
-	PID_Motor2.Target_Speed = 0;
+	PID_Motor2.Target = 0;
 	// 极速为520左右
 	
 	while (1)
@@ -71,7 +71,7 @@ int main(void)
 			// 编码器测速与电机速度
 			OLED_ShowString(1, 1, "CNT1:");
 			OLED_ShowString(2, 1, "CNT2:");
-			if (Serial_GetRxFlag() == 1)  // 串口有数据发过来
+			if (Serial_GetRxFlag() == 1)  // 串口数据包解包
 			{
 				char Command[100];
 				
@@ -96,6 +96,10 @@ int main(void)
 						{
 							Num_flag = 0;
 						}
+						else if (c == '+')
+						{
+							// 啥也不干
+						}
 						else 
 						{
 							Num *= 10;
@@ -106,7 +110,7 @@ int main(void)
 				if (strcmp(Command, "speed") == 0)
 				{
 					Num = (Num_flag == 0) ? -Num : Num;  // 确认正负
-					PID_Motor1.Target_Speed = Num;
+					PID_Motor1.Target = Num;
 				}
 				else 
 				{
@@ -118,8 +122,8 @@ int main(void)
 			count2 = Encoder2_Count;
 			OLED_ShowSignedNum(1, 6, count1, 5);
 			OLED_ShowSignedNum(2, 6, count2, 5);
-			PID_Motor1.Current_Speed = count1;
-			PID_Motor2.Current_Speed = count2;
+			PID_Motor1.Current = count1;
+			PID_Motor2.Current = count2;
 		}
 		else if (Mode == 1)
 		{
@@ -137,7 +141,7 @@ void Send_Data()
 	if (Count1 >= 10)
 	{
 		Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
-			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out, PID_Motor1.Target_Speed);
+			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out, PID_Motor1.Target);
 		
 		Count1 = 0;
 	}
