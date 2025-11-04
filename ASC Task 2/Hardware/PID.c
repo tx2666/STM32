@@ -54,7 +54,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 			pid->Count2 ++ ;
 			if (pid->Count2 >= 50)
 			{
-				// 如果速度为0且保持了500ms时
+				// 如果速度为0且保持了500ms
 				// 为了防止电机发出怪异的噪声
 				// 把输出Out设置为0
 				pid->Out = 0;
@@ -62,7 +62,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 			}
 		}
 		
-		// 控制输出
+		/* 控制输出 */
 		if (Motor_Num == 1)
 		{
 			Motor1_SetSpeed(pid->Out);

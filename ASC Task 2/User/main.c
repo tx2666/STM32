@@ -140,8 +140,16 @@ void Send_Data()
 	Count1 ++;
 	if (Count1 >= 10)
 	{
-		Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
-			PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out, PID_Motor1.Target);
+		if (Mode == 0)
+		{
+			Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder1_Count, 
+				PID_Motor1.P, PID_Motor1.I, PID_Motor1.D, PID_Motor1.Out, PID_Motor1.Target);
+		}
+		else if (Mode == 1)
+		{
+			Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder2_Count, 
+				PID_Motor2.P, PID_Motor2.I, PID_Motor2.D, PID_Motor2.Out, PID_Motor2.Target);
+		}
 		
 		Count1 = 0;
 	}
@@ -153,8 +161,15 @@ void TIM1_UP_IRQHandler(void)
 	{
 		Key_Tick();
 		Encoder_Tick();
-		PID_Motor_Control(1, &PID_Motor1);
-		PID_Motor_Control(2, &PID_Motor2);
+		if (Mode == 0)  			// 验收题1
+		{
+			PID_Motor_Control(1, &PID_Motor1);
+		}
+		else if (Mode == 1)  		// 验收题2
+		{
+			Motor1_SetSpeed(0);
+			PID_Motor_Control(2, &PID_Motor2);
+		}
 		Send_Data();
 		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
