@@ -22,22 +22,53 @@ typedef struct {
 	uint16_t Count2;
 } PID_Typedef;
 
-void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
+typedef enum {
+	POSTION = 0,
+	ADDITION = 1
+} PID_Mode;
+
+void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 {
 	pid->Count1 ++ ;
 	if (pid->Count1 >= 10)
 	{
-		pid->PrevPrevError = pid->PrevError;
-		pid->PrevError = pid->CurrError;
-		pid->CurrError = pid->Target - pid->Current;
-		pid->SumError += pid->CurrError;
-		// PID计算
-		pid->P = (pid->Kp) * (pid->CurrError - pid->PrevError);
-		pid->I = (pid->Ki) * (pid->CurrError);
-		pid->D = (pid->Kd) * (pid->CurrError - 2 * pid->PrevError + pid->PrevPrevError);
+		if (Mode == ADDITION)
+		{
+			pid->PrevPrevError = pid->PrevError;
+			pid->PrevError = pid->CurrError;
+			pid->CurrError = pid->Target - pid->Current;
+			pid->SumError += pid->CurrError;
+			// PID计算
+			pid->P = (pid->Kp) * (pid->CurrError - pid->PrevError);
+			pid->I = (pid->Ki) * (pid->CurrError);
+			pid->D = (pid->Kd) * (pid->CurrError - 2 * pid->PrevError + pid->PrevPrevError);
 		
-		// 输出计算
-		pid->Out += (pid->P + pid->I + pid->D) * pid->Magnification;
+			// 输出计算
+			pid->Out += (pid->P + pid->I + pid->D) * pid->Magnification;
+		}
+		else if (Mode == POSTION)
+		{
+			pid->PrevPrevError = pid->PrevError;
+			pid->PrevError = pid->CurrError;
+			pid->CurrError = pid->Target - pid->Current;
+			pid->SumError += pid->CurrError;
+			// PID计算
+			pid->P = (pid->Kp) * (pid->CurrError);
+			pid->I = (pid->Ki) * (pid->SumError);
+			pid->D = (pid->Kd) * (pid->CurrError - pid->PrevError);
+			
+			if (pid->I > (pid->Ki) * 1000 * pid->Magnification)
+			{
+				pid->I = 1000;
+			}
+			else if (pid->I < -(pid->Ki) * 1000 * pid->Magnification)
+			{
+				pid->I = -1000;
+			}
+			// 输出计算
+			pid->Out = (pid->P + pid->I + pid->D) * pid->Magnification;
+		}
+		
 		/* 输出限幅 */
 		if (pid->Out > 1000)
 		{
@@ -48,19 +79,19 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 			pid->Out = -1000;
 		}
 		/* 降噪 */
-		if (fabs(pid->Target - 0) <= 0.001 
-			&& fabs(pid->Current - 0) <= 0.001)
-		{
-			pid->Count2 ++ ;
-			if (pid->Count2 >= 50)
-			{
-				// 如果速度为0且保持了500ms
-				// 为了防止电机发出怪异的噪声
-				// 把输出Out设置为0
-				pid->Out = 0;
-				pid->Count2 = 0;
-			}
-		}
+//		if (fabs(pid->Target - 0) <= 0.001 
+//			&& fabs(pid->Current - 0) <= 0.001)
+//		{
+//			pid->Count2 ++ ;
+//			if (pid->Count2 >= 50)
+//			{
+//				// 如果速度为0且保持了500ms
+//				// 为了防止电机发出怪异的噪声
+//				// 把输出Out设置为0
+//				pid->Out = 0;
+//				pid->Count2 = 0;
+//			}
+//		}
 		
 		/* 控制输出 */
 		if (Motor_Num == 1)

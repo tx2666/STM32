@@ -40,11 +40,11 @@ int main(void)
 	PID_Motor1.Target = 0;
 	// 极速为480左右
 	PID_TypedefStructInit(&PID_Motor2);
-	PID_Motor2.Magnification = 1;
-	PID_Motor2.Kp = 1.13;
-	PID_Motor2.Ki = 0.41;
-	PID_Motor2.Kd = -3.5;
-	PID_Motor2.Target = 0;
+	PID_Motor2.Magnification = 0.1;
+	PID_Motor1.Kp = 0.3;
+	PID_Motor1.Ki = 0.42;
+	PID_Motor1.Kd = -0.35;
+	PID_Motor1.Target = 0;
 	// 极速为520左右
 	
 	while (1)
@@ -117,13 +117,9 @@ int main(void)
 					Serial_Printf("Command Error");
 				}
 			}
-			int16_t count1, count2;
-			count1 = Encoder1_Count;  // 在Encoder.c
-			count2 = Encoder2_Count;
-			OLED_ShowSignedNum(1, 6, count1, 5);
-			OLED_ShowSignedNum(2, 6, count2, 5);
-			PID_Motor1.Current = count1;
-			PID_Motor2.Current = count2;
+			OLED_ShowSignedNum(1, 6, Encoder1_Count, 5);
+			OLED_ShowSignedNum(2, 6, Encoder2_Count, 5);
+
 		}
 		else if (Mode == 1)
 		{
@@ -147,7 +143,7 @@ void Send_Data()
 		}
 		else if (Mode == 1)
 		{
-			Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)Encoder2_Count, 
+			Serial_Printf("Data:%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\r\n", (float)PID_Motor2.Current, 
 				PID_Motor2.P, PID_Motor2.I, PID_Motor2.D, PID_Motor2.Out, PID_Motor2.Target);
 		}
 		
@@ -159,19 +155,33 @@ void TIM1_UP_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
 	{
+		static uint8_t flag0 = 0;
+		static uint8_t flag1 = 0;
 		Key_Tick();
 		Encoder_Tick();
+
 		if (Mode == 0)  			// 验收题1
 		{
-			Motor2_SetSpeed(0);
+			PID_Motor1.Current = Encoder1_Count;
+			PID_Motor2.Current = Encoder2_Count;
 			PID_TypedefStructReset(&PID_Motor2);
-			PID_Motor_Control(1, &PID_Motor1);
+			// Motor2_SetSpeed(0);
+			PID_Motor_Control(1, &PID_Motor1, ADDITION);
+			flag1 = 1;
 		}
 		else if (Mode == 1)  		// 验收题2
 		{
-			Motor1_SetSpeed(0);
-			PID_TypedefStructReset(&PID_Motor1);
-			PID_Motor_Control(2, &PID_Motor2);
+			if (flag1)
+			{
+				PID_TypedefStructReset(&PID_Motor1);
+				PID_TypedefStructReset(&PID_Motor2);
+				Motor1_SetSpeed(0);
+				flag1 = 0;
+			}
+			PID_Motor1.Current += Encoder1_Count;
+			PID_Motor2.Target = PID_Motor1.Current;
+			PID_Motor2.Current += Encoder2_Count;
+			PID_Motor_Control(2, &PID_Motor2, POSTION);
 		}
 		Send_Data();
 		

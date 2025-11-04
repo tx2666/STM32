@@ -21,10 +21,14 @@ typedef struct {
 	uint16_t Count2;
 } PID_Typedef;
 
+typedef enum {
+	POSTION = 0,
+	ADDITION = 1
+} PID_Mode;
 
 /* 函数部分 */
-void PID_TypedefStructInit(PID_Typedef *PID_Struct);			// 结构体初始化赋值
-void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid);	// PID调控
-void PID_TypedefStructReset(PID_Typedef *PID_Struct);			// 除参数外全部清零
+void PID_TypedefStructInit(PID_Typedef *PID_Struct);							// 结构体初始化赋值
+void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode);
+void PID_TypedefStructReset(PID_Typedef *PID_Struct);							// 除参数外全部清零
 
 #endif
