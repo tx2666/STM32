@@ -7,8 +7,8 @@ typedef struct {
 	float Kp;				// 比例项系数
 	float Ki;				// 积分项系数
 	float Kd;				// 微分项系数
-	float Current_Speed;	// 当前速度
-	float Target_Speed;		// 目标速度
+	float Current;			// 当前速度
+	float Target;			// 目标速度
 	float P;				// 比例项结果
 	float I;				// 积分项结果
 	float D;				// 微分项结果
@@ -18,6 +18,7 @@ typedef struct {
 	float CurrError;		// 当前误差
 	float SumError;			// 误差积分
 	uint16_t Count1;
+	uint16_t Count2;
 } PID_Typedef;
 
 
