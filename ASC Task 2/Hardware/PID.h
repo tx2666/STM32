@@ -9,13 +9,14 @@ typedef struct {
 	float Kd;				// 微分项系数
 	float Current_Speed;	// 当前速度
 	float Target_Speed;		// 目标速度
-	float P;
-	float I;
-	float D;
-	float Out;
-	float PrevError;
-	float CurrError;
-	float SumError;
+	float P;				// 比例项结果
+	float I;				// 积分项结果
+	float D;				// 微分项结果
+	float Out;				// 输出
+	float PrevError;		// 上次误差
+	float PrevPrevError;	// 上上次误差
+	float CurrError;		// 当前误差
+	float SumError;			// 误差积分
 	uint16_t Count1;
 } PID_Typedef;
 

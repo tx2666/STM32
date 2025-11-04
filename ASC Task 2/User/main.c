@@ -36,8 +36,8 @@ int main(void)
 	PID_Motor1.Magnification = 1;
 	PID_Motor1.Kp = 1.16;
 	PID_Motor1.Ki = 0.42;
-	PID_Motor1.Kd = -3.5;
-	PID_Motor1.Target_Speed = 200;
+	PID_Motor1.Kd = -0.35;
+	PID_Motor1.Target_Speed = 0;
 	// 极速为530左右
 	PID_TypedefStructInit(&PID_Motor2);
 	PID_Motor2.Magnification = 1;

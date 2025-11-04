@@ -9,13 +9,14 @@ typedef struct {
 	float Kd;				// 微分项系数
 	float Current_Speed;	// 当前速度
 	float Target_Speed;		// 目标速度
-	float P;
-	float I;
-	float D;
-	float Out;
-	float PrevError;
-	float CurrError;
-	float SumError;
+	float P;				// 比例项结果
+	float I;				// 积分项结果
+	float D;				// 微分项结果
+	float Out;				// 输出
+	float PrevError;		// 上次误差
+	float PrevPrevError;	// 上上次误差
+	float CurrError;		// 当前误差
+	float SumError;			// 误差积分
 	uint16_t Count1;
 } PID_Typedef;
 
@@ -24,16 +25,17 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid)
 	pid->Count1 ++ ;
 	if (pid->Count1 >= 10)
 	{
+		pid->PrevPrevError = pid->PrevError;
 		pid->PrevError = pid->CurrError;
 		pid->CurrError = pid->Target_Speed - pid->Current_Speed;
 		pid->SumError += pid->CurrError;
 		// PID计算
-		pid->P = (pid->Kp) * (pid->CurrError);
-		pid->I = (pid->Ki) * (pid->SumError);
-		pid->D = (pid->Kd) * (pid->CurrError - pid->PrevError) / (pid->Count1);
+		pid->P = (pid->Kp) * (pid->CurrError - pid->PrevError);
+		pid->I = (pid->Ki) * (pid->CurrError);
+		pid->D = (pid->Kd) * (pid->CurrError - 2 * pid->PrevError + pid->PrevPrevError);
 		
 		// 输出计算
-		pid->Out = pid->P + pid->I + pid->D;
+		pid->Out += pid->P + pid->I + pid->D;
 		pid->Out *= pid->Magnification;
 		
 		if (pid->Out > 1000)
@@ -77,6 +79,7 @@ void PID_TypedefStructInit(PID_Typedef *PID_Struct)
 	PID_Struct->D = 0;
 	PID_Struct->Out = 0;
 	PID_Struct->PrevError = 0;
+	PID_Struct->PrevPrevError = 0;	
 	PID_Struct->CurrError = 0;
 	PID_Struct->SumError = 0;
 	PID_Struct->Count1 = 0;
