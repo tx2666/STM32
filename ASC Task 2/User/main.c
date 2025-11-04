@@ -34,7 +34,7 @@ int main(void)
 	
 	PID_TypedefStructInit(&PID_Motor1);
 	PID_Motor1.Magnification = 1;
-	PID_Motor1.Kp = 0.5;
+	PID_Motor1.Kp = 0.3;
 	PID_Motor1.Ki = 0.42;
 	PID_Motor1.Kd = -0.35;
 	PID_Motor1.Target = 0;
@@ -163,11 +163,14 @@ void TIM1_UP_IRQHandler(void)
 		Encoder_Tick();
 		if (Mode == 0)  			// 验收题1
 		{
+			Motor2_SetSpeed(0);
+			PID_TypedefStructReset(&PID_Motor2);
 			PID_Motor_Control(1, &PID_Motor1);
 		}
 		else if (Mode == 1)  		// 验收题2
 		{
 			Motor1_SetSpeed(0);
+			PID_TypedefStructReset(&PID_Motor1);
 			PID_Motor_Control(2, &PID_Motor2);
 		}
 		Send_Data();

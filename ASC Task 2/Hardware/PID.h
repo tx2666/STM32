@@ -23,7 +23,8 @@ typedef struct {
 
 
 /* 函数部分 */
-void PID_TypedefStructInit(PID_Typedef *PID_Struct);
-void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid);
+void PID_TypedefStructInit(PID_Typedef *PID_Struct);			// 结构体初始化赋值
+void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid);	// PID调控
+void PID_TypedefStructReset(PID_Typedef *PID_Struct);			// 除参数外全部清零
 
 #endif

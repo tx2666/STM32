@@ -97,4 +97,21 @@ void PID_TypedefStructInit(PID_Typedef *PID_Struct)
 	PID_Struct->CurrError = 0;
 	PID_Struct->SumError = 0;
 	PID_Struct->Count1 = 0;
+	PID_Struct->Count2 = 0;
+}
+
+void PID_TypedefStructReset(PID_Typedef *PID_Struct)
+{
+	PID_Struct->Current = 0;
+	// PID_Struct->Target = 0;
+	PID_Struct->P = 0;
+	PID_Struct->I = 0;
+	PID_Struct->D = 0;
+	PID_Struct->Out = 0;
+	PID_Struct->PrevError = 0;
+	PID_Struct->PrevPrevError = 0;	
+	PID_Struct->CurrError = 0;
+	PID_Struct->SumError = 0;
+	PID_Struct->Count1 = 0;
+	PID_Struct->Count2 = 0;
 }
