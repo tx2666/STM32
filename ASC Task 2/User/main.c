@@ -40,8 +40,8 @@ int main(void)
 	PID_Motor1.Target = 0;
 	// 极速为480左右
 	PID_TypedefStructInit(&PID_Motor2);
-	PID_Motor2.Magnification = 0.1;
-	PID_Motor1.Kp = 0.3;
+	PID_Motor2.Magnification = 0.15;
+	PID_Motor1.Kp = 0.25;
 	PID_Motor1.Ki = 0.42;
 	PID_Motor1.Kd = -0.35;
 	PID_Motor1.Target = 0;
@@ -157,11 +157,13 @@ void TIM1_UP_IRQHandler(void)
 	{
 		static uint8_t flag0 = 0;
 		static uint8_t flag1 = 0;
+		static uint16_t TIM_Count1 = 0;
 		Key_Tick();
 		Encoder_Tick();
 
 		if (Mode == 0)  			// 验收题1
 		{
+			Motor2_SetSpeed(0);
 			PID_Motor1.Current = Encoder1_Count;
 			PID_Motor2.Current = Encoder2_Count;
 			PID_TypedefStructReset(&PID_Motor2);
@@ -178,9 +180,13 @@ void TIM1_UP_IRQHandler(void)
 				Motor1_SetSpeed(0);
 				flag1 = 0;
 			}
-			PID_Motor1.Current += Encoder1_Count;
-			PID_Motor2.Target = PID_Motor1.Current;
-			PID_Motor2.Current += Encoder2_Count;
+			TIM_Count1 ++;
+			if (TIM_Count1 >= 10)
+			{
+				PID_Motor1.Current += Encoder1_Count;
+				PID_Motor2.Target = PID_Motor1.Current;
+				PID_Motor2.Current += Encoder2_Count;
+			}
 			PID_Motor_Control(2, &PID_Motor2, POSTION);
 		}
 		Send_Data();

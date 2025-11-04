@@ -59,11 +59,11 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 			
 			if (pid->I > (pid->Ki) * 1000 * pid->Magnification)
 			{
-				pid->I = 1000;
+				pid->I = (pid->Ki) * 1000;
 			}
 			else if (pid->I < -(pid->Ki) * 1000 * pid->Magnification)
 			{
-				pid->I = -1000;
+				pid->I = -(pid->Ki) * 1000;
 			}
 			// 输出计算
 			pid->Out = (pid->P + pid->I + pid->D) * pid->Magnification;
