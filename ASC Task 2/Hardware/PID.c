@@ -32,7 +32,11 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 	pid->Count1 ++ ;
 	if (pid->Count1 >= 10)
 	{
-		if (Mode == ADDITION)
+		float kp = pid->Kp;
+		float ki = pid->Ki;
+		float kd = pid->Kp;
+		
+		if (Mode == ADDITION)  // 增量式PID
 		{
 			pid->PrevPrevError = pid->PrevError;
 			pid->PrevError = pid->CurrError;
@@ -44,7 +48,7 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 			pid->D = (pid->Kd) * (pid->CurrError - 2 * pid->PrevError + pid->PrevPrevError);
 		
 			// 输出计算
-			pid->Out += (pid->P + pid->I + pid->D) * pid->Magnification;
+			pid->Out -= (pid->P + pid->I + pid->D) * pid->Magnification;
 		}
 		else if (Mode == POSTION)
 		{
@@ -53,20 +57,48 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 			pid->CurrError = pid->Target - pid->Current;
 			pid->SumError += pid->CurrError;
 			// PID计算
-			pid->P = (pid->Kp) * (pid->CurrError);
-			pid->I = (pid->Ki) * (pid->SumError);
-			pid->D = (pid->Kd) * (pid->CurrError - pid->PrevError);
-			
-			if (pid->I > (pid->Ki) * 1000 * pid->Magnification)
+			if (fabs(pid->CurrError) < 250)
 			{
-				pid->I = (pid->Ki) * 1000;
+				kp *= 0.3;
 			}
-			else if (pid->I < -(pid->Ki) * 1000 * pid->Magnification)
+			pid->P = kp * (pid->CurrError);
+						
+			if (pid->P > 1500)
 			{
-				pid->I = -(pid->Ki) * 1000;
+				kd *= 1.5;
+			}
+			pid->I = ki * (pid->SumError);
+			pid->D = kd * (pid->CurrError - pid->PrevError);
+			
+			if (pid->I > 600)
+			{
+				pid->SumError = 600 / pid->Ki;
+				pid->I = 600;
+			}
+			else if (pid->I < -600)
+			{
+				pid->SumError = -600 / pid->Ki;
+				pid->I = -600;
 			}
 			// 输出计算
 			pid->Out = (pid->P + pid->I + pid->D) * pid->Magnification;
+			if (fabs(pid->Out) > 900)
+			{
+				pid->Out *= 0.55;
+			}
+			else if (fabs(pid->Out) > 700)
+			{
+				pid->Out *= 0.77;
+			}
+			else if (fabs(pid->Out) > 500)
+			{
+				pid->Out *= 0.95;
+			}
+			
+			if (fabs(pid->Out) < 200 || fabs(pid->CurrError) < 100)
+			{
+				pid->Out = 0;
+			}
 		}
 		
 		/* 输出限幅 */
@@ -78,20 +110,6 @@ void PID_Motor_Control(uint8_t Motor_Num, PID_Typedef *pid, PID_Mode Mode)
 		{
 			pid->Out = -1000;
 		}
-		/* 降噪 */
-//		if (fabs(pid->Target - 0) <= 0.001 
-//			&& fabs(pid->Current - 0) <= 0.001)
-//		{
-//			pid->Count2 ++ ;
-//			if (pid->Count2 >= 50)
-//			{
-//				// 如果速度为0且保持了500ms
-//				// 为了防止电机发出怪异的噪声
-//				// 把输出Out设置为0
-//				pid->Out = 0;
-//				pid->Count2 = 0;
-//			}
-//		}
 		
 		/* 控制输出 */
 		if (Motor_Num == 1)

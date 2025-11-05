@@ -40,11 +40,11 @@ int main(void)
 	PID_Motor1.Target = 0;
 	// 极速为480左右
 	PID_TypedefStructInit(&PID_Motor2);
-	PID_Motor2.Magnification = 0.15;
-	PID_Motor1.Kp = 0.25;
-	PID_Motor1.Ki = 0.42;
-	PID_Motor1.Kd = -0.35;
-	PID_Motor1.Target = 0;
+	PID_Motor2.Magnification = 0.28;
+	PID_Motor2.Kp = 0.45;
+	PID_Motor2.Ki = 0;
+	PID_Motor2.Kd = -0.3;
+	PID_Motor2.Target = 0;
 	// 极速为520左右
 	
 	while (1)
